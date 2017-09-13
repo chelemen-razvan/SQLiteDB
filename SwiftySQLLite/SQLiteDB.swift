@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CSwiftySQLLite
 
 let SQLITE_DATE = SQLITE_NULL + 1
 
