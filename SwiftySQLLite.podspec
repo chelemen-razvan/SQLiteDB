@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftySQLLite'
-  s.version          = '0.1'
+  s.version          = '0.1.1'
   s.summary          = 'Simple swift wrapper over sqllite C api'
  
   s.description      = <<-DESC
@@ -19,10 +19,10 @@ Simple swift wrapper over sqllite C api, ideal for simple sqllite operations whe
     'SWIFT_VERSION' => '3.0',
   }
   s.library = 'sqlite3'
-  s.preserve_paths = 'SwiftySQLLite/{iphone,simulator}/**/*'
+  s.preserve_paths = 'SwiftySQLLite/{iphone,simulator}/*'
   s.pod_target_xcconfig = {
-      'SWIFT_INCLUDE_PATHS[sdk=iphoneos*]'           => '$(SRCROOT)/iphone',
-      'SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]'    => '$(SRCROOT)/simulator',
+      'SWIFT_INCLUDE_PATHS[sdk=iphoneos*]'           => '$(SRCROOT)/SwiftySQLLite/SwiftySQLLite/iphone',
+      'SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]'    => '$(SRCROOT)/SwiftySQLLite/SwiftySQLLite/simulator',
     }
  
 end
