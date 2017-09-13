@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftySQLLite'
-  s.version          = '0.1.9'
+  s.version          = '0.1.10'
   s.summary          = 'Simple swift wrapper over sqllite C api'
  
   s.description      = <<-DESC

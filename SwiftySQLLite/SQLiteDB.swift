@@ -19,7 +19,7 @@ private let SQLITE_TRANSIENT = unsafeBitCast(-1, to:sqlite3_destructor_type.self
 @objc(SQLiteDB)
 public class SQLiteDB:NSObject {
 	/// The SQLite database file name - defaults to `data.db`.
-	public var dbName = "data.db"
+	public var dbPath = "data.db"
 	/// Singleton instance for access to the SQLiteDB class
 	public static let shared = SQLiteDB()
 	/// Internal name for GCD queue used to execute SQL commands so that all commands are executed sequentially
@@ -57,54 +57,23 @@ public class SQLiteDB:NSObject {
 	///
 	/// - Parameter copyFile: Whether to copy the file named in `DB_NAME` from resources or to create a new empty database file. Defaults to `true`
 	/// - Returns: Returns a boolean value indicating if the database was successfully opened or not.
-    public func openDB(copyFile:Bool = true) -> Bool {
-        if db != nil {
-            closeDB()
-        }
-        // Set up for file operations
-        let fm = FileManager.default
-        // Get path to DB in Documents directory
-        var docDir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-        // If macOS, add app name to path since otherwise, DB could possibly interfere with another app using SQLiteDB
-        #if os(OSX)
-            let info = Bundle.main.infoDictionary!
-            let appName = info["CFBundleName"] as! String
-            docDir = (docDir as NSString).appendingPathComponent(appName)
-            // Create folder if it does not exist
-            if !fm.fileExists(atPath:docDir) {
-                do {
-                    try fm.createDirectory(atPath:docDir, withIntermediateDirectories:true, attributes:nil)
-                } catch {
-                    assert(false, "SQLiteDB: Error creating DB directory: \(docDir) on macOS")
-                    return false
-                }
-            }
-        #endif
-        let path = (docDir as NSString).appendingPathComponent(dbName)
-        // Check if DB is there in Documents directory
-        if !(fm.fileExists(atPath:path)) && copyFile {
-            // The database does not exist, so copy it
-            guard let rp = Bundle.main.resourcePath else { return false }
-            let from = (rp as NSString).appendingPathComponent(dbName)
-            do {
-                try fm.copyItem(atPath:from, toPath:path)
-            } catch let error {
-                assert(false, "SQLiteDB: Failed to copy writable version of DB! Error - \(error.localizedDescription)")
-                return false
-            }
-        }
-        // Open the DB
-        let cpath = path.cString(using:String.Encoding.utf8)
-        let error = sqlite3_open(cpath!, &db)
-        if error != SQLITE_OK {
-            // Open failed, close DB and fail
-            NSLog("SQLiteDB - failed to open DB!")
-            sqlite3_close(db)
-            return false
-        }
-        NSLog("SQLiteDB opened!")
-        return true
-    }
+	public func openDB(copyFile:Bool = true) -> Bool {
+		if db != nil {
+			closeDB()
+		}
+        
+		// Open the DB
+		let cpath = dbPath.cString(using:String.Encoding.utf8)
+		let error = sqlite3_open_v2(cpath!, &db, SQLITE_OPEN_READONLY, nil)
+		if error != SQLITE_OK {
+			// Open failed, close DB and fail
+			NSLog("SQLiteDB - failed to open DB!")
+			sqlite3_close(db)
+			return false
+		}
+		NSLog("SQLiteDB opened!")
+		return true
+	}
 	
 	/// Returns an ISO-8601 date string for a given date.
 	///
