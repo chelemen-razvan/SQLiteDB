@@ -11,7 +11,7 @@ import Foundation
 // MARK:- SQLiteDB Class
 /// Base class for providing object-based access to SQLite tables. Simply define the properties and their default values (a value has to be there in order to determine value type) and SQLTable will handle the basic CRUD (creating, reading, updating, deleting) actions for you without any additional code.
 @objc(SQLTable)
-class SQLTable:NSObject {
+public class SQLTable:NSObject {
 	/// Internal reference to the SQLite table name as determined based on the name of the `SQLTable` sub-class name. The sub-class name should be in the singular - for example, Task for a tasks table.
 	private var table = ""
 	/// Internal dictionary to keep track of whether a specific table was verfied to be in existence in the database. This dictionary is used to automatically create the table if it does not exist in the DB.
@@ -26,7 +26,7 @@ class SQLTable:NSObject {
 	}
 	
 	/// Base initialization which sets up the table name and then verifies that the table exists in the DB, and if it does not, creates it.
-	required override init() {
+	required override public init() {
 		super.init()
 		// Table name
 		let cls = "\(classForCoder)".lowercased()
