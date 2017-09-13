@@ -21,7 +21,7 @@ public class SQLiteDB:NSObject {
 	/// The SQLite database file name - defaults to `data.db`.
 	var DB_NAME = "data.db"
 	/// Singleton instance for access to the SQLiteDB class
-	static let shared = SQLiteDB()
+	public static let shared = SQLiteDB()
 	/// Internal name for GCD queue used to execute SQL commands so that all commands are executed sequentially
 	private let QUEUE_LABEL = "SQLiteDB"
 	/// The internal GCD queue
@@ -57,7 +57,7 @@ public class SQLiteDB:NSObject {
 	///
 	/// - Parameter copyFile: Whether to copy the file named in `DB_NAME` from resources or to create a new empty database file. Defaults to `true`
 	/// - Returns: Returns a boolean value indicating if the database was successfully opened or not.
-	func openDB(copyFile:Bool = true) -> Bool {
+	public func openDB(copyFile:Bool = true) -> Bool {
 		if db != nil {
 			closeDB()
 		}
@@ -110,7 +110,7 @@ public class SQLiteDB:NSObject {
 	///
 	/// - Parameter date: The date to format in to an ISO-8601 string
 	/// - Returns: A string with the date in ISO-8601 format.
-	func dbDate(date:Date) -> String {
+	public func dbDate(date:Date) -> String {
 		return fmt.string(from:date)
 	}
 	
@@ -120,7 +120,7 @@ public class SQLiteDB:NSObject {
 	///   - sql: The SQL statement to be executed
 	///   - parameters: An array of optional parameters in case the SQL statement includes bound parameters - indicated by `?`
 	/// - Returns: The ID for the last inserted row (if it was an INSERT command and the ID is an integer column) or a result code indicating the status of the command execution. A non-zero result indicates success and a 0 indicates failure.
-	func execute(sql:String, parameters:[Any]? = nil)->Int {
+	public func execute(sql:String, parameters:[Any]? = nil)->Int {
 		assert(db != nil, "Database has not been opened! Use the openDB() method before any DB queries.")
 		var result = 0
 		queue.sync {
@@ -137,7 +137,7 @@ public class SQLiteDB:NSObject {
 	///   - sql: The SQL query to be executed
 	///   - parameters: An array of optional parameters in case the SQL statement includes bound parameters - indicated by `?`
 	/// - Returns: An empty array if the query resulted in no rows. Otherwise, an array of dictionaries where each dictioanry key is a column name and the value is the column value.
-	func query(sql:String, parameters:[Any]? = nil)->[[String:Any]] {
+	public func query(sql:String, parameters:[Any]? = nil)->[[String:Any]] {
 		assert(db != nil, "Database has not been opened! Use the openDB() method before any DB queries.")
 		var rows = [[String:Any]]()
 		queue.sync {
@@ -151,7 +151,7 @@ public class SQLiteDB:NSObject {
 	/// Get the current internal DB version
 	///
 	/// - Returns: An interger indicating the current internal DB version as set by the developer via code. If a DB version was not set, this defaults to 0.
-	func getDBVersion() -> Int {
+	public func getDBVersion() -> Int {
 		assert(db != nil, "Database has not been opened! Use the openDB() method before any DB queries.")
 		var version = 0
 		let arr = query(sql:"PRAGMA user_version")
@@ -164,7 +164,7 @@ public class SQLiteDB:NSObject {
 	/// Set the current DB version, a user-defined version number for the database. This value can be useful in managing data migrations so that you can add new columns to your tables or massage your existing data to suit a new situation.
 	///
 	/// - Parameter version: An integer value indicating the new DB version.
-	func set(version:Int) {
+	public func set(version:Int) {
 		assert(db != nil, "Database has not been opened! Use the openDB() method before any DB queries.")
 		_ = execute(sql:"PRAGMA user_version=\(version)")
 	}

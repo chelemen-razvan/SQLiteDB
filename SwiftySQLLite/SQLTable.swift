@@ -65,14 +65,14 @@ public class SQLTable:NSObject {
 	/// The primary key for the table - defaults to `id`. Override this in `SQLTable` sub-classes to define a different column name as the primary key.
 	///
 	/// - Returns: A string indicating the name of the primary key column for the table. Defaults to `id`.
-	func primaryKey() -> String {
+	public func primaryKey() -> String {
 		return "id"
 	}
 	
 	/// An array of property names (in a sub-classed instance of `SQLTable`) that are to be ignored when fetching/saving information to the DB. Override this method in sub-classes when you have properties that you don't want persisted to the database.
 	///
 	/// - Returns: An array of String values indicating property/value names to be ignored when persisting data to the database.
-	func ignoredKeys() -> [String] {
+	public func ignoredKeys() -> [String] {
 		return []
 	}
 	
@@ -92,7 +92,7 @@ public class SQLTable:NSObject {
 	///   - order: The optional sort order for the data. Specify the sort order as valid SQLite statements as they would appear in an ORDER BY caluse (but without the ORDER BY part). If this parameter is omitted, or a blank string is provided, the data will not be ordered and will be retrieved in the order it was entered into the database.
 	///   - limit: The optional number of rows to fetch. If no value is provide or a 0 value is passed in, all rows will be fetched. Otherwise, up to "n" rows, where "n" is the number specified by the `limit` parameter, will be fetched depending on the other passed in parameters.
 	/// - Returns: An array of `SQLTable` sub-class instances matching the criteria as specified in the `filter` and `limit` parameters orderd as per the `order` parameter.
-	class func rows(filter:String="", order:String="", limit:Int=0) -> [SQLTable] {
+	public class func rows(filter:String="", order:String="", limit:Int=0) -> [SQLTable] {
 		var sql = "SELECT * FROM \(table)"
 		if !filter.isEmpty {
 			sql += " WHERE \(filter)"
@@ -110,7 +110,7 @@ public class SQLTable:NSObject {
 	///
 	/// - Parameter sql: The SQL query to be used to fetch the data. This should be a valid (and complete) SQL query
 	/// - Returns: Returns an empty array if no matching rows were found. Otherwise, returns an array of `SQLTable` sub-class instances matching the criterias specified as per the SQL query passed in via the `sql` parameter.
-	class func rowsFor(sql:String="") -> [SQLTable] {
+	public class func rowsFor(sql:String="") -> [SQLTable] {
 		var res = [SQLTable]()
 		let tmp = self.init()
 		let data = tmp.values()
@@ -134,7 +134,7 @@ public class SQLTable:NSObject {
 	///
 	/// - Parameter id: The primary key value for the row of data you want to get.
 	/// - Returns: Return an instance of `SQLTable` sub-class if a matching row for the primary key was found, otherwise, returns nil.
-	class func rowBy(id:Any) -> SQLTable? {
+	public class func rowBy(id:Any) -> SQLTable? {
 		let row = self.init()
 		let data = row.values()
 		let db = SQLiteDB.shared
@@ -162,7 +162,7 @@ public class SQLTable:NSObject {
 	///   - filter: The optional filter criteria to be used in fetching the data. Specify the filter criteria in the form of a valid SQLite WHERE clause (but without the actual WHERE keyword). If this parameter is omitted or a blank string is provided, all rows will be fetched.
 	///   - order: The optional sort order for the data. Specify the sort order as valid SQLite statements as they would appear in an ORDER BY caluse (but without the ORDER BY part). If this parameter is omitted, or a blank string is provided, the data will not be ordered and will be retrieved in the order it was entered into the database.
 	/// - Returns: Return an instance of `SQLTable` sub-class if a matching row for the provided row number and filter criteria was found, otherwise, returns nil.
-	class func row(number:Int, filter:String="", order:String="") -> SQLTable? {
+	public class func row(number:Int, filter:String="", order:String="") -> SQLTable? {
 		let row = self.init()
 		let data = row.values()
 		let db = SQLiteDB.shared
@@ -191,7 +191,7 @@ public class SQLTable:NSObject {
 	///
 	/// - Parameter filter: The optional filter criteria to be used in fetching the data. Specify the filter criteria in the form of a valid SQLite WHERE clause (but without the actual WHERE keyword). If this parameter is omitted or a blank string is provided, all rows will be fetched.
 	/// - Returns: An integer value indicating the total number of rows, if no filter criteria was provided, or the number of rows matching the provided filter criteria.
-	class func count(filter:String="") -> Int {
+	public class func count(filter:String="") -> Int {
 		let db = SQLiteDB.shared
 		var sql = "SELECT COUNT(*) AS count FROM \(table)"
 		if !filter.isEmpty {
@@ -211,7 +211,7 @@ public class SQLTable:NSObject {
 	///
 	/// - Parameter filter: The optional filter criteria to be used in removing data rows. Specify the filter criteria in the form of a valid SQLite WHERE clause (but without the actual WHERE keyword). If this parameter is omitted or a blank string is provided, all rows will be deleted from the underlying table.
 	/// - Returns: A boolean value indicating whether the row deletion was successful or not.
-	class func remove(filter:String = "") -> Bool {
+	public class func remove(filter:String = "") -> Bool {
 		let db = SQLiteDB.shared
 		let sql:String
 		if filter.isEmpty {
@@ -226,7 +226,7 @@ public class SQLTable:NSObject {
 	}
 	
 	/// Remove all rows from the underlying table to create an empty table.
-	class func zap() {
+	public class func zap() {
 		let db = SQLiteDB.shared
 		let sql = "DELETE FROM \(table)"
 		_ = db.execute(sql:sql)
@@ -236,7 +236,7 @@ public class SQLTable:NSObject {
 	/// Save the current values for this particular `SQLTable` sub-class instance to the database.
 	///
 	/// - Returns: An integer value indicating either the row id (in case of an insert) or the status of the save - a non-zero value indicates success and a 0 indicates failure.
-	func save() -> Int {
+	public func save() -> Int {
 		let db = SQLiteDB.shared
 		let key = primaryKey()
 		let data = values()
@@ -276,7 +276,7 @@ public class SQLTable:NSObject {
 	/// Delete the row for this particular `SQLTable` sub-class instance from the database.
 	///
 	/// - Returns: A boolean value indicating the success or failure of the operation.
-	func delete() -> Bool {
+	public func delete() -> Bool {
 		let db = SQLiteDB.shared
 		let key = primaryKey()
 		let data = values()
@@ -289,7 +289,7 @@ public class SQLTable:NSObject {
 	}
 	
 	/// Update the data for this particular `SQLTable` sub-class instance from the database so that all values are updated with the latest values from the database.
-	func refresh() {
+	public func refresh() {
 		let db = SQLiteDB.shared
 		let key = primaryKey()
 		let data = values()
