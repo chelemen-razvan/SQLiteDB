@@ -64,7 +64,7 @@ public class SQLiteDB:NSObject {
         
 		// Open the DB
 		let cpath = dbPath.cString(using:String.Encoding.utf8)
-		let error = sqlite3_open(cpath!, &db)
+		let error = sqlite3_open_v2(cpath!, &db, SQLITE_OPEN_READONLY, nil)
 		if error != SQLITE_OK {
 			// Open failed, close DB and fail
 			NSLog("SQLiteDB - failed to open DB!")
